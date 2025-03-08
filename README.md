@@ -18,7 +18,11 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - 2 sub-redes privadas em zonas de disponibilidade diferentes (ex.: us-east-1a, us-east-1b).
 - Um NAT Gateway em uma sub-rede pública para saída à internet (sem IPs públicos nas instâncias privadas).
 - Tabela de rotas configurada para que as sub-redes privadas acessem a internet via NAT.
-- 
+  
+## Criar os Security Groups
+- Vá em "Security Groups" no console AWS.
+- Crie 4 SGs (SG-ELB, SG-EC2, SG-RDS, SG-EFS).
+- Adicione as regras de entrada e saída conforme a tabela abaixo.
 
 | Componente | SG Nome | Inbound | Outbound |
 |------------|--------|---------|----------|
