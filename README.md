@@ -21,5 +21,5 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 
 | Componente | SG Nome | Inbound | Outbound |
 |------------|--------|---------|----------|
-| sei lá    | ok     |         |          |
+| Classic Load Balancer |  SG-ELB  |  TCP 80 (0.0.0.0/0) | TCP 80 (SG-EC2) |
 
