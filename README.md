@@ -22,4 +22,6 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 | Componente | SG Nome | Inbound | Outbound |
 |------------|--------|---------|----------|
 | Classic Load Balancer |  SG-ELB  |  TCP 80 (0.0.0.0/0) | TCP 80 (SG-EC2) |
-
+| EC2 Instances (ASG) |	SG-EC2	TCP 80 (SG-ELB), TCP 2049 (SG-EC2) |	TCP 3306 (SG-RDS), TCP 2049 (SG-EFS), TCP 443 (0.0.0.0/0) |
+| RDS MySQL	| SG-RDS |	TCP 3306 (SG-EC2)| 	Todos (0.0.0.0/0) |
+| EFS	| SG-EFS |	TCP 2049 (SG-EC2) |	Todos (0.0.0.0/0) |
