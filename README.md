@@ -50,9 +50,80 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - Listener:
   - Load Balancer Protocol: HTTP, Porta: 80.
   - Instance Protocol: HTTP, Porta: 80.
+- Sub-redes: Selecione as 2 sub-redes públicas.
+- Configure o SG-ELB como Security Group.
+- Health Check:
+  - Protocol: HTTP.
+  - Path: /
+  - Intervalo: 30 segundos, Threshold: 2.
+- Após criar, anote o DNS do ELB (ex:wordpress-elb-123456.us-east-1.elb.amazonaws.com).
 
+## Crie um Launch Template:
+- AMI: Amazon Linux 2.
+- Tipo: t2.micro.
+- Configure o SG-EC2 como Security Group.
+- Adicione uma IAM role com as políticas de permissões AmazonElasticFileSystemFullAccess e AmazonSSMManagedInstanceCore
+- Adicione o Script user_data (veja abaixo).
+```
+#!/bin/bash
 
+# Atualizar sistema
+yum update -y
 
+# Instalar Docker
+yum install -y docker
+systemctl start docker
+systemctl enable docker
+usermod -aG docker ec2-user
+
+# Instalar Docker Compose
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+# Instalar amazon-efs-utils e montar EFS
+yum install -y amazon-efs-utils
+
+# Criar diretório para montagem do EFS
+mkdir -p /mnt/efs
+
+# Montar o EFS manualmente
+mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-xxxxxxxxxxxxxxxxx.efs.us-east-1.amazonaws.com:/ /mnt/efs
+
+# Adicionar montagem automática no /etc/fstab
+echo "fs-xxxxxxxxxxxxxxxxx.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+
+# Criar docker-compose.yml no EFS (se ainda não existir)
+if [ ! -f /mnt/efs/docker-compose.yml ]; then
+  cat <<EOF > /mnt/efs/docker-compose.yml
+version: '3'
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: database-xxxxxxxxxxxx.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: Senha
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - /mnt/efs:/var/www/html/wp-content
+EOF
+fi
+
+# Iniciar o WordPress
+cd /mnt/efs
+sudo docker-compose up -d
+```
+## Crie um Auto Scaling Group
+- Min: 2 instâncias, Max: 2 (ou mais, se desejar).
+- Sub-redes: As 2 sub-redes privadas.
+- Associar ao Classic Load Balancer.
+
+## Teste
+- Acesse o DNS do Classic Load Balancer no navegador.
+- Verifique a tela de login do WordPress.
 
 
 
