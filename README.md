@@ -15,9 +15,11 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - Acesso a um terminal com conexão à internet.
 
 ## Crie uma VPC com:
+- 2 sub-redes públicas em zonas de disponibilidade diferentes (ex.: us-east-1a, us-east-1b).
+- Conecte as sub-redes públicas a um Internet Gateway. 
 - 2 sub-redes privadas em zonas de disponibilidade diferentes (ex.: us-east-1a, us-east-1b).
 - Um NAT Gateway em uma sub-rede pública para saída à internet (sem IPs públicos nas instâncias privadas).
-- Tabela de rotas configurada para que as sub-redes privadas acessem a internet via NAT.
+- Tabela de rotas configurada para que as sub-redes privadas acessem a internet via NAT e as públicas pelo Internet Gateway.
   
 ## Criar os Security Groups
 - Vá em "Security Groups" no console AWS.
@@ -30,3 +32,32 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 | EC2 Instances (ASG) |	SG-EC2 |	TCP 80 (SG-ELB), TCP 2049 (SG-EC2) |	TCP 3306 (SG-RDS), TCP 2049 (SG-EFS), TCP 443 (0.0.0.0/0) |
 | RDS MySQL	| SG-RDS |	TCP 3306 (SG-EC2)| 	Todos (0.0.0.0/0) |
 | EFS	| SG-EFS |	TCP 2049 (SG-EC2) |	Todos (0.0.0.0/0) |
+
+## Crie uma instâcia RDS
+- Engine: MySQL.
+- Tamanho: db.t2.micro (free tier, se aplicável).
+- Sub-rede privada (sem acesso público).
+- Grupo de Segurança: Permitir tráfego na porta 3306 apenas das instâncias EC2.
+- Anote o endpoint, usuário e senha do banco.ação de uma instância.
+- Configure o SG-RDS como Security Group.
+
+## Crie um sistema de arquivos EFS
+- Clique Criar sistema de arquivos e coloque a mesma VPC que vai usar nas instâncias.
+- Configure o SG-EFS como Security Group.
+
+## Crie um Classic Load Balancer
+- Nome: Escolha um nome (ex.: wordpress-elb).
+- Listener:
+  - Load Balancer Protocol: HTTP, Porta: 80.
+  - Instance Protocol: HTTP, Porta: 80.
+
+
+
+
+
+
+
+
+
+
+
