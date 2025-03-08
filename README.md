@@ -1,4 +1,4 @@
-# Projeto-AWS-Compass-UOL
+# Projeto AWS Compass UOL
 Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um Auto Scaling Group (ASG), com a aplicação WordPress rodando em containers Docker, direcionando o tráfego para um Load Balancer.
 
 ## Tecnologias usadas
