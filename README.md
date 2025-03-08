@@ -20,5 +20,6 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - Tabela de rotas configurada para que as sub-redes privadas acessem a internet via NAT.
 
 | Componente | SG Nome | Inbound | Outbound |
-| ----------------------------------------- |
-|    sei lá  |  ok     |         |          | 
+|------------|--------|---------|----------|
+| sei lá    | ok     |         |          |
+
