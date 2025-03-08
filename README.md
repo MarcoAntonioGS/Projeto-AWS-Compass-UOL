@@ -2,7 +2,7 @@
 Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um Auto Scaling Group (ASG), com a aplicação WordPress rodando em containers Docker, direcionando o tráfego para um Load Balancer.
 
 ## Arquitetura
-- *VPC:* Rede virtual na região us-east-1 com sub-redes públicas e privadas.
+- _VPC:_ Rede virtual na região us-east-1 com sub-redes públicas e privadas.
 - *Auto Scaling Group (ASG):* Gerencia 2 instâncias EC2 (escaláveis) com o Amazon Linux 2.
 - *Classic Load Balancer:* Distribui o tráfego HTTP (porta 80) entre as instâncias.
 - *Amazon RDS:* Instância MySQL para o banco de dados WordPress.
