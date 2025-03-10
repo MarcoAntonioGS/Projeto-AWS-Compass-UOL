@@ -112,16 +112,16 @@ yum install -y amazon-efs-utils
 mkdir -p /mnt/efs
 
 # Montar o EFS manualmente
-mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-0c32fe634aa1f6999.efs.us-east-1.amazonaws.com:/ /mnt/efs
+mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport <seu efs>:/ /mnt/efs
 
 # Adicionar montagem automática no /etc/fstab
-echo "fs-0c32fe634aa1f6999.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+echo "<seu efs>":/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 
 # Instalar MySQL Client
 yum install -y mysql
 
 # Criar o banco de dados no RDS
-mysql -h database-1.cpc4kwy00wmm.us-east-1.rds.amazonaws.com -u admin -p221203Ma <<EOF
+mysql -h database-1.xxxxxxxxxx.us-east-1.rds.amazonaws.com -u admin -p221203Ma <<EOF
 CREATE DATABASE IF NOT EXISTS wordpress;
 EOF
 
@@ -153,9 +153,9 @@ services:
     ports:
       - "80:80"
     environment:
-      WORDPRESS_DB_HOST: database-1.cpc4kwy00wmm.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_HOST: database-1.xxxxxxxx.us-east-1.rds.amazonaws.com
       WORDPRESS_DB_USER: admin
-      WORDPRESS_DB_PASSWORD: 221203Ma
+      WORDPRESS_DB_PASSWORD: senha
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - /mnt/efs:/var/www/html/wp-content
