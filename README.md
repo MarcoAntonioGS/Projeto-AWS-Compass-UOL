@@ -1,5 +1,5 @@
 # Projeto AWS Compass UOL
-Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um Auto Scaling Group (ASG), com a aplicação WordPress rodando em containers Docker, direcionando o tráfego para um Load Balancer.
+Atividade prática do programa de bolsas DevSecOps da Compass UOL 2025, cria um Auto Scaling Group (ASG) com a aplicação WordPress rodando em containers Docker, direcionando o tráfego para um Classic Load Balancer (CLB), com monitoramento avançado usando Prometheus e Node Exporter.
 
 ## Tecnologias usadas
 - **VPC:** Rede virtual na região us-east-1 com sub-redes públicas e privadas.
@@ -8,7 +8,10 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - **Amazon RDS:** Instância MySQL para o banco de dados WordPress.
 - **Amazon EFS:** Armazena os arquivos do WordPress (wp-content) compartilhados entre as instâncias.
 - **Docker e Docker Compose:** Executa o WordPress e os serviços de monitoramento.
-
+- **Prometheus:** Monitora métricas do Docker e das instâncias.
+- **Node Exporter:** Coleta métricas de sistema (CPU, memória, disco) das instâncias.
+- **AWS Service Discovery:** Descoberta automática de instâncias via API EC2.
+  
 ## Pré requisitos
 - Conta na AWS com permissões de administrador.
 - CLI da AWS configurada (aws configure) com credenciais válidas.
@@ -29,7 +32,7 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 | Componente | SG Nome | Inbound | Outbound |
 |------------|--------|---------|----------|
 | Classic Load Balancer |  SG-ELB  |  TCP 80 (0.0.0.0/0) | TCP 80 (SG-EC2) |
-| EC2 Instances (ASG) |	SG-EC2 |	TCP 80 (SG-ELB), TCP 2049 (SG-EC2) |	TCP 3306 (SG-RDS), TCP 2049 (SG-EFS), TCP 443 (0.0.0.0/0) |
+| EC2 Instances (ASG) |	SG-EC2 |	TCP 80 (SG-ELB), TCP 2049 (SG-EC2), TCP 9100 (SG-EC2) |	TCP 3306 (SG-RDS), TCP 2049 (SG-EFS), TCP 443 (0.0.0.0/0) |
 | RDS MySQL	| SG-RDS |	TCP 3306 (SG-EC2)| 	Todos (0.0.0.0/0) |
 | EFS	| SG-EFS |	TCP 2049 (SG-EC2) |	Todos (0.0.0.0/0) |
 
@@ -40,6 +43,9 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - Grupo de Segurança: Permitir tráfego na porta 3306 apenas das instâncias EC2.
 - Anote o endpoint, usuário e senha do banco.ação de uma instância.
 - Configure o SG-RDS como Security Group.
+- Crie o banco de dados:
+  ```mysql -h <seu endpoint> -u admin -p221203Ma
+CREATE DATABASE wordpress;```
 
 ## Crie um sistema de arquivos EFS
 - Clique Criar sistema de arquivos e coloque a mesma VPC que vai usar nas instâncias.
@@ -50,6 +56,9 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
 - Listener:
   - Load Balancer Protocol: HTTP, Porta: 80.
   - Instance Protocol: HTTP, Porta: 80.
+- Adicione outro listener:
+  - Load Balancer Protocol: TCP, Porta: 9090 (Prometheus).
+  - Instance Protocol: TCP, Porta: 9090.
 - Sub-redes: Selecione as 2 sub-redes públicas.
 - Configure o SG-ELB como Security Group.
 - Health Check:
@@ -57,12 +66,28 @@ Atividade prática do programa de bolsas Devsecops da Compass UOL 2025, cria um 
   - Path: /
   - Intervalo: 30 segundos, Threshold: 2.
 - Após criar, anote o DNS do ELB (ex:wordpress-elb-123456.us-east-1.elb.amazonaws.com).
+- Editar configuração de perdurabilidade de cookies, selecione Gerado pelo balanceador de carga.
 
 ## Crie um Launch Template:
 - AMI: Amazon Linux 2.
 - Tipo: t2.micro.
 - Configure o SG-EC2 como Security Group.
-- Adicione uma IAM role com as políticas de permissões AmazonElasticFileSystemFullAccess e AmazonSSMManagedInstanceCore
+- Adicione uma IAM role com as políticas:
+   - AmazonElasticFileSystemFullAccess.
+   - AmazonSSMManagedInstanceCore.
+   - Adicione a permissão personalizada para Service Discovery:
+     ```
+     {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*"
+    }
+  ]
+} ```
+
 - Adicione o Script user_data (veja abaixo).
 ```
 #!/bin/bash
