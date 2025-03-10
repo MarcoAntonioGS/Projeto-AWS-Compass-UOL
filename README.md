@@ -68,7 +68,7 @@ Atividade prática do programa de bolsas DevSecOps da Compass UOL 2025, cria um 
   - Intervalo: 30 segundos, Threshold: 2.
 - Após criar, anote o DNS do ELB (ex:wordpress-elb-123456.us-east-1.elb.amazonaws.com).
 - Editar configuração de perdurabilidade de cookies, selecione Gerado pelo balanceador de carga,
-  - Período de expiração: 100000
+  - Período de expiração: 0
   
 ## Crie um Launch Template:
 - AMI: Amazon Linux 2.
@@ -116,10 +116,18 @@ yum install -y amazon-efs-utils
 mkdir -p /mnt/efs
 
 # Montar o EFS manualmente
-mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-xxxxxxxxxxxxxxxxx.efs.us-east-1.amazonaws.com:/ /mnt/efs
+mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-0c32fe634aa1f6999.efs.us-east-1.amazonaws.com:/ /mnt/efs
 
 # Adicionar montagem automática no /etc/fstab
-echo "fs-xxxxxxxxxxxxxxxxx.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+echo "fs-0c32fe634aa1f6999.efs.us-east-1.amazonaws.com:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+
+# Instalar MySQL Client
+yum install -y mysql
+
+# Criar o banco de dados no RDS
+mysql -h database-1.cpc4kwy00wmm.us-east-1.rds.amazonaws.com -u admin -p221203Ma <<EOF
+CREATE DATABASE IF NOT EXISTS wordpress;
+EOF
 
 # Configurar Docker para expor métricas
 cat <<EOF > /etc/docker/daemon.json
@@ -129,10 +137,6 @@ cat <<EOF > /etc/docker/daemon.json
 }
 EOF
 systemctl restart docker
-if [ $? -ne 0 ]; then
-  echo "Erro ao reiniciar o Docker. Verifique os logs."
-  exit 1
-fi
 
 # Aguardar até que a porta 9323 esteja disponível
 echo "Aguardando Docker expor métricas na porta 9323..."
@@ -153,9 +157,9 @@ services:
     ports:
       - "80:80"
     environment:
-      WORDPRESS_DB_HOST: database-xxxxxxxxxxxx.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_HOST: database-1.cpc4kwy00wmm.us-east-1.rds.amazonaws.com
       WORDPRESS_DB_USER: admin
-      WORDPRESS_DB_PASSWORD: SenhaSegura
+      WORDPRESS_DB_PASSWORD: 221203Ma
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - /mnt/efs:/var/www/html/wp-content
@@ -209,6 +213,7 @@ chown -R ec2-user:ec2-user /mnt/efs
 # Iniciar os containers automaticamente
 cd /mnt/efs
 docker-compose up -d
+
 ```
 
 ## Crie um Auto Scaling Group
@@ -220,6 +225,7 @@ docker-compose up -d
 ## Teste
 - Acesse o DNS do CLB no navegador: http://loadbalancer-xxxxxxxx.us-east-1.elb.amazonaws.com.
 - Instale o Wordpress.
+- Faça o upload de uma imagem no Wordpress e veja se foi salvo no EFS 
 - Acesse o Prometheus: http://loadbalancer-xxxxxxxx.us-east-1.elb.amazonaws.com:9090 > Status > Targets para confirmar que job="docker" e job="node" estão "Up".
 - Teste métricas como node_cpu_seconds_total na aba Graph.
 
