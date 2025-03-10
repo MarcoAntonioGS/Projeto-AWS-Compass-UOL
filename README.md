@@ -43,13 +43,13 @@ Atividade prática do programa de bolsas DevSecOps da Compass UOL 2025, cria um 
 - Grupo de Segurança: Permitir tráfego na porta 3306 apenas das instâncias EC2.
 - Anote o endpoint, usuário e senha.
 - Configure o SG-RDS como Security Group.
-- Crie o banco de dados:
+- Crie o banco de dados através de uma instância EC2:
   ```
   mysql -h <seu endpoint> -u admin -p221203Ma
   CREATE DATABASE wordpress;
   ```
 ## Crie um sistema de arquivos EFS
-- Clique Criar sistema de arquivos e coloque a mesma VPC que vai usar nas instâncias.
+- Clique criar sistema de arquivos e coloque a mesma VPC que vai usar nas instâncias.
 - Configure o SG-EFS como Security Group.
 
 ## Crie um Classic Load Balancer
