@@ -41,7 +41,7 @@ Atividade prática do programa de bolsas DevSecOps da Compass UOL 2025, cria um 
 - Tamanho: db.t2.micro (free tier, se aplicável).
 - Sub-rede privada (sem acesso público).
 - Grupo de Segurança: Permitir tráfego na porta 3306 apenas das instâncias EC2.
-- Anote o endpoint, usuário e senha do banco.ação de uma instância.
+- Anote o endpoint, usuário e senha.
 - Configure o SG-RDS como Security Group.
 - Crie o banco de dados:
   ```
