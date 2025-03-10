@@ -67,8 +67,8 @@ Atividade prática do programa de bolsas DevSecOps da Compass UOL 2025, cria um 
   - Path: /wp-admin/install.php (Mudar para "/" após instalar o Wordpress) 
   - Intervalo: 30 segundos, Threshold: 2.
 - Após criar, anote o DNS do ELB (ex:wordpress-elb-123456.us-east-1.elb.amazonaws.com).
-- Editar configuração de perdurabilidade de cookies, selecione Gerado pelo balanceador de carga.
-
+- Editar configuração de perdurabilidade de cookies, selecione Gerado pelo balanceador de carga, 
+   -Período de expiração: 100000
 ## Crie um Launch Template:
 - AMI: Amazon Linux 2.
 - Tipo: t2.micro.
