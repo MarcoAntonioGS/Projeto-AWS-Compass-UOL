@@ -121,7 +121,7 @@ echo "<seu efs>":/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 yum install -y mysql
 
 # Criar o banco de dados no RDS
-mysql -h database-1.xxxxxxxxxx.us-east-1.rds.amazonaws.com -u admin -p221203Ma <<EOF
+mysql -h database-1.xxxxxxxxxx.us-east-1.rds.amazonaws.com -u admin -psenha <<EOF
 CREATE DATABASE IF NOT EXISTS wordpress;
 EOF
 
