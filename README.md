@@ -217,9 +217,9 @@ docker-compose up -d
 - Adicione a tag prometheus=true ao ASG para Service Discovery
 
 ## Teste
-- Acesse o DNS do CLB no navegador: http://loadbalancer-2050655957.us-east-1.elb.amazonaws.com.
+- Acesse o DNS do CLB no navegador: http://loadbalancer-xxxxxxxx.us-east-1.elb.amazonaws.com.
 - Instale o Wordpress.
-- Acesse o Prometheus: http://loadbalancer-2050655957.us-east-1.elb.amazonaws.com:9090 > Status > Targets para confirmar que job="docker" e job="node" estão "Up".
+- Acesse o Prometheus: http://loadbalancer-xxxxxxxx.us-east-1.elb.amazonaws.com:9090 > Status > Targets para confirmar que job="docker" e job="node" estão "Up".
 - Teste métricas como node_cpu_seconds_total na aba Graph.
 
 
