@@ -239,15 +239,15 @@ echo "<SEU-EFS>:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 ## Crie uma política de escalabilidade
 - Navegue até o serviço CloudWatch > Alarms > Create Alarm
 - Selecione a métrica RequestCount
-- Crie dois Alarmes, um para Scale in (>=100) e outro para Scale out (<=30)
+- Defina as condições do alarme (exemplo: > 10 para scale-out ou < 3 para scale-in)
 - Siga o exemplo da imagem abaixo
   
  ![Captura de tela de 2025-03-19 17-10-03](https://github.com/user-attachments/assets/15b0052d-f5cf-43c0-ac92-e4750f7df13d)
 
 - No seu grupo ASG vá em Criar política de escalabilidade dinâmica
 - Crie duas políticas simples para reduzir e aumentar a capacidade
-- Ação: Adicionar uma 1 instância do Auto Scaling Group para o Alarme Scale in 120 segundos
-- Ação: Remover 1 instância do Auto Scaling Group para o Alarme Scale out 300 segundos
+- Ação: Adicionar uma 1 instância do Auto Scaling Group para o Alarme Scale Out 120 segundos
+- Ação: Remover 1 instância do Auto Scaling Group para o Alarme Scale In 300 segundos
 - Siga o exemplo da imagem abaixo
 
 ![Captura de tela de 2025-03-19 17-36-19](https://github.com/user-attachments/assets/58a8c50a-83ca-472a-8ade-b2aa67132bb2)
