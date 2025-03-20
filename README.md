@@ -239,7 +239,7 @@ echo "<SEU-EFS>:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 ## Crie uma política de escalabilidade
 - Navegue até o serviço CloudWatch > Alarms > Create Alarm
 - Selecione a métrica RequestCount
-- Crie os Alarmes
+- Crie dois Alarmes, um para Scale in (>=100) e outro para Scale out (<=30)
 - Siga o exemplo da imagem abaixo
   
  ![Captura de tela de 2025-03-19 17-10-03](https://github.com/user-attachments/assets/15b0052d-f5cf-43c0-ac92-e4750f7df13d)
