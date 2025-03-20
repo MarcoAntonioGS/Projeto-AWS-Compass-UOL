@@ -246,6 +246,8 @@ echo "<SEU-EFS>:/ /mnt/efs nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 
 - No seu grupo ASG vá em Criar política de escalabilidade dinâmica
 - Crie duas políticas simples para reduzir e aumentar a capacidade
+- Ação: Adicionar uma 1 instância do Auto Scaling Group para o Alarme Scale in 120 segundos
+- Ação: Remover 1 instância do Auto Scaling Group para o Alarme Scale out 300 segundos
 - Siga o exemplo da imagem abaixo
 
 ![Captura de tela de 2025-03-19 17-36-19](https://github.com/user-attachments/assets/58a8c50a-83ca-472a-8ade-b2aa67132bb2)
