@@ -65,7 +65,7 @@ Este projeto faz parte do programa de bolsas DevSecOps da Compass UOL 2025. O ob
 - Health Check:
   - Protocol: HTTP
   - Path: /wp-admin/install.php (Mudar para "/" após instalar o Wordpress) 
-  - Intervalo: 30 segundos, Timeout: 5, Threshold: 2, UnhealthyThreshold: 2, HealthyThreshold: 3
+  - Intervalo: 30 segundos, Timeout: 5, UnhealthyThreshold: 2, HealthyThreshold: 3
 - Após criar, anote o DNS do ELB (ex:wordpress-elb-123456.us-east-1.elb.amazonaws.com)
 - Editar configuração de perdurabilidade de cookies, selecione Gerado pelo balanceador de carga
   - Período de expiração: 0
